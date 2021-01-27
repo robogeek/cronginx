@@ -9,9 +9,10 @@ RUN apt-get update \
     && apt-get install -y cron bash wget certbot \
     && apt-get update -y \
     && mkdir -p /webroots /scripts \
-    && rm -f /etc/nginx/conf.d/default.conf
+    && rm -f /etc/nginx/conf.d/default.conf \
+    && rm -f /etc/cron.d/certbot    
 
-COPY register.sh renew.sh /scripts/
+COPY *.sh /scripts/
 RUN chmod +x /scripts/*.sh
 
 # /webroots/DOMAIN.TLD/.well-known/... files go here
@@ -21,18 +22,12 @@ VOLUME /etc/letsencrypt
 # This lets folks inject Nginx config files
 VOLUME /etc/nginx/conf.d
 
-# Make the directories for the domains to manage
-# /webroots/DOMAIN.TLD will be mounted 
-# into each proxy as http://DOMAIN.TLD/.well-known
-
-RUN mkdir -p /webroots/test.geekwisdom.net/.well-known/acme-challenge
-
 WORKDIR /scripts
 
 # This installs a Crontab entry which 
 # runs "certbot renew" on several days a week at 03:22 AM
 
-RUN echo "22 03 * * 2,7 root /usr/bin/certbot renew" >/etc/cron.d/certbot-renew
+RUN echo "22 03 * * 2,7 root /scripts/renew.sh" >/etc/cron.d/certbot-renew
 
 # RUN echo "22 03 * * 2,4,6,7 root /scripts/register.sh test.geekwisdom.net" >/etc/cron.d/certbot-test-geekwisdom-net
 

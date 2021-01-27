@@ -1,0 +1,12 @@
+{
+    "name": "cronginx",
+    "version": "1.0.0",
+    "description": "Scripts to build Cronginx, and interface with Docker Hub",
+    "scripts": {
+        "login": "docker login -u ",
+        "build": "docker build -t cronginx:latest .",
+        "tag": "docker tag cronginx robogeek/cronginx:latest",
+        "push": "docker push robogeek/cronginx"
+    },
+    "license": "ISC"
+}
