@@ -1,0 +1,27 @@
+# Example of using Cronginx in a Compose file
+# Attach it to your desired network(s)
+# For the volumes mounts, adjust the directories as desired
+
+version: '3.8'
+services:
+
+  cronginx:
+    # build: .
+    image: robogeek/cronginx
+    container_name: cronginx
+    networks:
+        - frontnet
+    ports:
+        - 80:80
+        - 443:443
+    restart: always
+    volumes:
+        - type: bind
+          source: ./etc-letsencrypt
+          target: /etc/letsencrypt
+        - type: bind
+          source: ./webroots
+          target: /webroots
+        - type: bind
+          source: ./nginx-conf-d
+          target: /etc/nginx/conf.d
